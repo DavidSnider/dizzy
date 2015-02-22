@@ -7,6 +7,10 @@
  * 3. I have added the member function reserve_space(unsigned) to
  *    reserve space in the underlying vector to avoid reallocation
  *    during insertions.
+ * 4. I use std::equal and std::lexicographical_compare for the
+ *    implementations of the relational operators as due to the
+ *    possibly different undefined spaces prior to the beginning
+ *    of the queue, just comparing vectors would not work.
  */
 
 #pragma once
@@ -16,6 +20,9 @@
 #include <algorithm>
 
 namespace dizzy{
+    template<typename T>
+    class flat_queue;
+
     template<typename T>
     class flat_queue{
     private:
@@ -50,6 +57,25 @@ namespace dizzy{
     private:
         std::vector<T> data;
         size_type true_front;
+
+        template<class U>
+        friend bool operator== (const flat_queue<U>& lhs,
+                                const flat_queue<U>& rhs);
+        template<typename U>
+        friend bool operator!= (const flat_queue<U>& lhs,
+                                const flat_queue<U>& rhs);
+        template<typename U>
+        friend bool operator<  (const flat_queue<U>& lhs,
+                                const flat_queue<U>& rhs);
+        template<typename U>
+        friend bool operator<= (const flat_queue<U>& lhs,
+                                const flat_queue<U>& rhs);
+        template<typename U>
+        friend bool operator>  (const flat_queue<U>& lhs,
+                                const flat_queue<U>& rhs);
+        template<typename U>
+        friend bool operator>= (const flat_queue<U>& lhs,
+                                const flat_queue<U>& rhs);
     };
 
     template<typename T>
@@ -125,6 +151,55 @@ namespace dizzy{
 
     template<typename T>
     void flat_queue<T>::swap(flat_queue& x) noexcept{
-        std::swap(*this, x);
+        using std::swap;
+        swap(data, x.data);
+        swap(true_front, x.true_front);
     }
+
+    template<typename T>
+    void swap(flat_queue<T>& x, flat_queue<T>& y){
+        x.swap(y);
+    }
+
+    template <typename T>
+    inline bool operator== (const flat_queue<T>& lhs, const flat_queue<T>& rhs){
+        if (lhs.size() - lhs.true_front != rhs.size() - rhs.true_front){
+            return false;
+        }
+        return std::equal(begin(lhs.data) + lhs.true_front, end(lhs.data),
+                          begin(rhs.data) + rhs.true_front);
+    }
+
+    template <typename T>
+    inline bool operator!= (const flat_queue<T>& lhs, const flat_queue<T>& rhs){
+        return !(lhs == rhs);
+    }
+
+    template <typename T>
+    inline bool operator< (const flat_queue<T>& lhs, const flat_queue<T>& rhs){
+        return std::lexicographical_compare(begin(lhs.data) + lhs.true_front,
+                                            end(lhs.data),
+                                            begin(rhs.data) + rhs.true_front,
+                                            end(rhs.data));
+    }
+
+    template <typename T>
+    inline bool operator<= (const flat_queue<T>& lhs, const flat_queue<T>& rhs){
+        return (lhs == rhs || lhs < rhs);
+
+    }
+
+    template <typename T>
+    inline bool operator> (const flat_queue<T>& lhs, const flat_queue<T>& rhs){
+        return std::lexicographical_compare(begin(rhs.data) + rhs.true_front,
+                                            end(rhs.data),
+                                            begin(lhs.data) + lhs.true_front,
+                                            end(lhs.data));
+    }
+
+    template <typename T>
+    inline bool operator>= (const flat_queue<T>& lhs, const flat_queue<T>& rhs){
+        return (lhs == rhs || lhs > rhs);
+    }
+
 }
