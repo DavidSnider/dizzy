@@ -1,0 +1,35 @@
+for flat_queue:
+
+/* Mark notes:
+ * Don't ever add allocator support, it's an exercise in hating yourself.
+ *    Nobody overrides anything but the global one these days anyway.
+ * Why reserve_space? Why not reserve?
+ * Why not keep the standard interface... not std::queue's... but...
+ * Compress is interesting, but you should also expose a shrink_to_fit method
+ *    just have it call compress(1)
+ * You should add the other usual suspects for aliases though... reference,
+      const_reference, pointer, const_pointer
+ * You should also add support for iteration and add those aliases
+ * If you can make your move operators noexcept, you should
+ * You supply custom copy/move constructors but *not* assignment operators...
+ * You definitely should *not* be implementing copy/move stuff
+ *    The default does exactly what you're doing manually
+ *    Except you've screwed yourself by not having assignment operators
+ * The one thing that you could actually get from explicit copy operations is
+ *    that you could size the *copy* to fit the data
+ * But if you do decide to do that, you should declare the move operators and
+ *    set them = default;
+ * You should also implement copy/move in terms of swap when convenient
+ *    (see copy-swap/create and swap in:
+ *    http://www.umich.edu/~eecs381/lecture/ExceptsClassesObjectdynmemory.pdf
+ * So, the interface you should be exposing is essentially std::vector's with
+ *    adjustments that make sense for a queue
+ *    Which also means things like .data, and even operator[], I would say
+ * for the iterators, just expose std::vectors.
+ * Some of your functions include a space between the close paren of a function
+ *    signature and the open brace of its body... others do not...
+ * Also sometimes you go all T & function_name like a bloody madman.
+ *    Why you put space between T and & bro?
+ * Also sometimes you do things on one line and sometimes you dont
+ *    (function implementations) and it's weird and arbitrary
+ */
