@@ -162,7 +162,7 @@ namespace dizzy{
             data.reserve(new_size);
         } else{
             compress( new_size / static_cast<double>(size()) );
-      }
+        }
     }
 
     template<typename T>
