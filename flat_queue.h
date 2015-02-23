@@ -4,14 +4,17 @@
  *    container base is not given.
  * 2. I haven't implemented the constructors that take allocators.
  *    Maybe I'll get around to it when I'm feeling more competent.
- * 3. I have added the member function reserve_space(unsigned) to
+ * 3. I have added the member functions reserve_space(size_type) to
  *    reserve space in the underlying vector to avoid reallocation
- *    during insertions.
+ *    during insertions and compress(size_type) which will
+ *    reallocate the internal vector with allocation size proportional
+ *    to size() * the argument, which has a default value of 2.
  * 4. I use std::equal and std::lexicographical_compare for the
  *    implementations of the relational operators as due to the
  *    possibly different undefined spaces prior to the beginning
  *    of the queue, just comparing vectors would not work.
  */
+
 
 #pragma once
 
@@ -52,6 +55,7 @@ namespace dizzy{
         void pop();
 
         void reserve_space(size_type size);
+        void compress(size_type mult_factor = 2);
 
         void swap (flat_queue& x) noexcept;
 
@@ -144,11 +148,7 @@ namespace dizzy{
     void flat_queue<T>::pop(){
         ++true_front;
         if(true_front > data.size() / 2 ){
-            std::vector<T> tempVec;
-            tempVec.reserve(size() * 2);
-            std::move(begin(data) + true_front, end(data), begin(tempVec));
-            std::swap(data, tempVec);
-            true_front = 0;
+            compress();
         }
     }
 
@@ -158,7 +158,17 @@ namespace dizzy{
     }
 
     template<typename T>
-    void flat_queue<T>::swap(flat_queue& x) noexcept{
+    void flat_queue<T>::compress(flat_queue<T>::size_type mult_factor){
+        std::vector<T> tempVec;
+        tempVec.reserve(size() * mult_factor);
+        std::move(begin(data) + true_front, end(data), begin(tempVec));
+        std::swap(data, tempVec);
+        true_front = 0;
+    }
+
+
+    template<typename T>
+    void flat_queue<T>::swap(flat_queue& x) noexcept {
         using std::swap;
         swap(data, x.data);
         swap(true_front, x.true_front);
