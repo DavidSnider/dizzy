@@ -9,7 +9,7 @@
  *      to avoid reallocation during insertions. If given a size less
  *      than the current size, this does nothing, otherwise triggers
  *      a reallocation of the internal vector.
- *    - compress(size_type) : reallocate the internal vector with
+ *    - compress(double): reallocate the internal vector with
  *      allocation size proportional to size() * the argument,
  *      which has a default value of 2.
  * 4. I use std::equal and std::lexicographical_compare for the
