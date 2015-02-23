@@ -58,7 +58,7 @@ namespace dizzy{
         std::vector<T> data;
         size_type true_front;
 
-        template<class U>
+        template<typename U>
         friend bool operator== (const flat_queue<U>& lhs,
                                 const flat_queue<U>& rhs);
         template<typename U>
