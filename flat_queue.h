@@ -18,6 +18,7 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
+#include <iterator>
 
 namespace dizzy{
     template<typename T>
@@ -142,6 +143,11 @@ namespace dizzy{
     template<typename T>
     void flat_queue<T>::pop(){
         ++true_front;
+        if(true_front > data.size()/2 ){
+            std::move(begin(data) + true_front, end(data), begin(data));
+            data.resize( size() );
+            true_front = 0;
+        }
     }
 
     template<typename T>
