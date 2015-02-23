@@ -143,7 +143,7 @@ namespace dizzy{
     template<typename T>
     void flat_queue<T>::pop(){
         ++true_front;
-        if(true_front > data.size()/2 ){
+        if(true_front > data.size() / 2 ){
             std::vector<T> tempVec;
             tempVec.reserve(size() * 2);
             std::move(begin(data) + true_front, end(data), begin(tempVec));
