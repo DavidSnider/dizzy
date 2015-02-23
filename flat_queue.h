@@ -4,11 +4,14 @@
  *    container base is not given.
  * 2. I haven't implemented the constructors that take allocators.
  *    Maybe I'll get around to it when I'm feeling more competent.
- * 3. I have added the member functions reserve_space(size_type) to
- *    reserve space in the underlying vector to avoid reallocation
- *    during insertions and compress(size_type) which will
- *    reallocate the internal vector with allocation size proportional
- *    to size() * the argument, which has a default value of 2.
+ * 3. I have added two new member functions:
+ *    - reserve_space(size_type): reserve space in the underlying vector
+ *      to avoid reallocation during insertions. If given a size less
+ *      than the current size, this does nothing, otherwise triggers
+ *      a reallocation of the internal vector.
+ *    - compress(size_type) : reallocate the internal vector with
+ *      allocation size proportional to size() * the argument,
+ *      which has a default value of 2.
  * 4. I use std::equal and std::lexicographical_compare for the
  *    implementations of the relational operators as due to the
  *    possibly different undefined spaces prior to the beginning
@@ -22,6 +25,7 @@
 #include <utility>
 #include <algorithm>
 #include <iterator>
+#include <cmath>
 
 namespace dizzy{
     template<typename T>
@@ -54,8 +58,8 @@ namespace dizzy{
 
         void pop();
 
-        void reserve_space(size_type size);
-        void compress(size_type mult_factor = 2);
+        void reserve_space(size_type new_size);
+        void compress(double mult_factor = 2.0);
 
         void swap (flat_queue& x) noexcept;
 
@@ -153,15 +157,19 @@ namespace dizzy{
     }
 
     template<typename T>
-    void flat_queue<T>::reserve_space(flat_queue<T>::size_type size){
-        data.reserve(size);
+    void flat_queue<T>::reserve_space(flat_queue<T>::size_type new_size){
+        if(empty()){
+            data.reserve(new_size);
+        } else{
+            compress( new_size / static_cast<double>(size()) );
+      }
     }
 
     template<typename T>
-    void flat_queue<T>::compress(flat_queue<T>::size_type mult_factor){
+    void flat_queue<T>::compress(double mult_factor){
         std::vector<T> tempVec;
-        tempVec.reserve(size() * mult_factor);
-        std::move(begin(data) + true_front, end(data), begin(tempVec));
+        tempVec.reserve( ceil(size() * mult_factor) );
+        std::move(begin(data) + true_front, end(data), back_inserter(tempVec));
         std::swap(data, tempVec);
         true_front = 0;
     }
