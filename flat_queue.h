@@ -144,8 +144,10 @@ namespace dizzy{
     void flat_queue<T>::pop(){
         ++true_front;
         if(true_front > data.size()/2 ){
-            std::move(begin(data) + true_front, end(data), begin(data));
-            data.resize( size() );
+            std::vector<T> tempVec;
+            tempVec.reserve(size() * 2);
+            std::move(begin(data) + true_front, end(data), begin(tempVec));
+            std::swap(data, tempVec);
             true_front = 0;
         }
     }
