@@ -52,11 +52,16 @@ namespace dizzy{
         using const_reverse_iterator
         = typename container::const_reverse_iterator;
 
-        flat_queue();
+        flat_queue() = default;
         explicit flat_queue(const container& data_);
         explicit flat_queue(container&& data_);
         flat_queue(const flat_queue& x);
         flat_queue(flat_queue&& x);
+        flat_queue(std::initializer_list<T> init);
+
+        flat_queue& operator= ( const flat_queue& other );
+        flat_queue& operator= ( flat_queue&& otherwise );
+        flat_queue& operator= ( std::initializer_list<T> init);
 
         bool empty() const;
         size_type size() const;
@@ -112,20 +117,17 @@ namespace dizzy{
 
     private:
         container data;
-        size_type true_front;
+        size_type true_front = 0;
 
     };
 
     template<typename T>
-    flat_queue<T>::flat_queue() : true_front{0} {}
-
-    template<typename T>
     flat_queue<T>::flat_queue(const container& data_)
-        : data{data_}, true_front{0} {}
+        : data{data_} {}
 
     template<typename T>
     flat_queue<T>::flat_queue(container&& data_)
-        : data{std::move(data_)}, true_front{0} {}
+        : data{std::move(data_)} {}
 
     template<typename T>
     flat_queue<T>::flat_queue(const flat_queue& x)
@@ -134,6 +136,28 @@ namespace dizzy{
     template<typename T>
     flat_queue<T>::flat_queue(flat_queue&& x)
         : data{std::move(x.data)}, true_front{x.true_front} { x.true_front = 0;}
+
+    template<typename T>
+    flat_queue<T>::flat_queue(std::initializer_list<T> init) : data{init} {}
+
+    template<typename T>
+    flat_queue<T>& flat_queue<T>::operator= ( const flat_queue& other ){
+        auto temp{other};
+        swap(temp);
+        return *this;
+    }
+
+    template<typename T>
+    flat_queue<T>& flat_queue<T>::operator= ( flat_queue&& other ){
+        swap(other);
+        return *this;
+    }
+
+    template<typename T>
+    flat_queue<T>& flat_queue<T>::operator= ( std::initializer_list<T> init){
+        data = init;
+        true_front = 0;
+    }
 
     template<typename T>
     bool flat_queue<T>::empty() const {
@@ -258,7 +282,7 @@ namespace dizzy{
         if (lhs.size() != rhs.size()){
             return false;
         }
-        return std::equal( begin(lhs), end(lhs), begin(rhs) );
+        return std::equal( std::begin(lhs), std::end(lhs), std::begin(rhs) );
     }
 
     template <typename T>
