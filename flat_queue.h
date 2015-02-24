@@ -71,10 +71,6 @@ namespace dizzy{
 
         void swap (flat_queue& x) noexcept;
 
-    private:
-        std::vector<T> data;
-        size_type true_front;
-
         template<typename U>
         friend bool operator== (const flat_queue<U>& lhs,
                                 const flat_queue<U>& rhs);
@@ -93,6 +89,11 @@ namespace dizzy{
         template<typename U>
         friend bool operator>= (const flat_queue<U>& lhs,
                                 const flat_queue<U>& rhs);
+
+    private:
+        std::vector<T> data;
+        size_type true_front;
+
     };
 
     template<typename T>
