@@ -31,19 +31,17 @@
 #include <cmath>
 
 namespace dizzy{
-    template<typename T>
-    class flat_queue;
 
     template<typename T>
     class flat_queue{
     public:
 
-        using size_type = unsigned;
+        using size_type = std::size_t;
         using value_type = T;
-        using reference = T;  // std::vector::reference;
-        using const_reference = const T;  // std::vector::const_reference;
-        using pointer = T*;  // std::vector::pointer;
-        using const_pointer = const T*;  // std::vector::const_pointer;
+        using pointer = typename std::vector<T>::pointer;
+        using const_pointer = typename std::vector<T>::const_pointer;
+        using reference = typename std::vector<T>::reference;
+        using const_reference = typename std::vector<T>::const_reference;
 
         flat_queue();
         explicit flat_queue (const std::vector<value_type>& data_);

@@ -2,9 +2,6 @@ for flat_queue:
 
 /* Mark notes:
  * Why not keep the standard interface... not std::queue's... but...
- * You should add the other usual suspects for aliases though... reference,
- *    const_reference, pointer, const_pointer
- *    FIX ME
  * You should also add support for iteration and add those aliases
  * If you can make your move operators noexcept, you should
  * You supply custom copy/move constructors but *not* assignment operators...
@@ -22,10 +19,4 @@ for flat_queue:
  *    adjustments that make sense for a queue
  *    Which also means things like .data, and even operator[], I would say
  * for the iterators, just expose std::vectors.
- * Some of your functions include a space between the close paren of a function
- *    signature and the open brace of its body... others do not...
- * Also sometimes you go all T & function_name like a bloody madman.
- *    Why you put space between T and & bro?
- * Also sometimes you do things on one line and sometimes you dont
- *    (function implementations) and it's weird and arbitrary
  */
