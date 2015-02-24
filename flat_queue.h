@@ -6,7 +6,7 @@
  *       I will not be implementing these as I understand "Nobody overrides
  *       anything but the global one these days anyway"
  * 3. I have added two new member functions:
- *    - reserve_space(size_type): reserve space in the underlying vector
+ *    - reserve(size_type): reserve space in the underlying vector
  *      to avoid reallocation during insertions. If given a size less
  *      than the current size, this does nothing, otherwise triggers
  *      a reallocation of the internal vector.
@@ -59,7 +59,7 @@ namespace dizzy{
 
         void pop();
 
-        void reserve_space(size_type new_size);
+        void reserve(size_type new_size);
         void compress(double mult_factor = 2.0);
 
         void swap (flat_queue& x) noexcept;
@@ -149,7 +149,7 @@ namespace dizzy{
     }
 
     template<typename T>
-    void flat_queue<T>::reserve_space(flat_queue<T>::size_type new_size){
+    void flat_queue<T>::reserve(flat_queue<T>::size_type new_size){
         if(empty()){
             data.reserve(new_size);
         } else{
