@@ -59,13 +59,12 @@ namespace dizzy{
         explicit flat_queue( const container& data_ );
         explicit flat_queue( container&& data_ );
         flat_queue( const flat_queue& x );
-        flat_queue( flat_queue&& x );
-        template< typename InputIt >
-        flat_queue( InputIt first, InputIt last );
+        flat_queue( flat_queue&& x ) noexcept;
+        template< typename InputIt > flat_queue( InputIt first, InputIt last );
         flat_queue( std::initializer_list<T> init );
 
         flat_queue& operator= ( const flat_queue& other );
-        flat_queue& operator= ( flat_queue&& otherwise );
+        flat_queue& operator= ( flat_queue&& otherwise ) noexcept;
         flat_queue& operator= ( std::initializer_list<T> init);
 
         bool empty() const;
@@ -138,7 +137,7 @@ namespace dizzy{
         : data( std::begin(x), std::end(x) ) {}
 
     template<typename T>
-    flat_queue<T>::flat_queue( flat_queue&& x )
+    flat_queue<T>::flat_queue( flat_queue&& x ) noexcept
         : data(std::make_move_iterator( std::begin(x) ),
                std::make_move_iterator( std::end(x) ) ) {
         x.true_front = 0;
@@ -159,7 +158,7 @@ namespace dizzy{
     }
 
     template<typename T>
-    flat_queue<T>& flat_queue<T>::operator= ( flat_queue&& other ){
+    flat_queue<T>& flat_queue<T>::operator= ( flat_queue&& other ) noexcept {
         swap(other);
         return *this;
     }

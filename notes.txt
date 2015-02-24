@@ -1,19 +1,7 @@
 for flat_queue:
 
 /* Mark notes:
- * Why not keep the standard interface... not std::queue's... but...
  * If you can make your move operators noexcept, you should
- * You supply custom copy/move constructors but *not* assignment operators...
- * You definitely should *not* be implementing copy/move stuff
- *    The default does exactly what you're doing manually
- *    Except you've screwed yourself by not having assignment operators
- * The one thing that you could actually get from explicit copy operations is
- *    that you could size the *copy* to fit the data
- * But if you do decide to do that, you should declare the move operators and
- *    set them = default;
- * You should also implement copy/move in terms of swap when convenient
- *    (see copy-swap/create and swap in:
- *    http://www.umich.edu/~eecs381/lecture/ExceptsClassesObjectdynmemory.pdf
  * So, the interface you should be exposing is essentially std::vector's with
  *    adjustments that make sense for a queue
  *    Which also means things like .data, and even operator[], I would say
