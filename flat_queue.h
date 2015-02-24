@@ -21,6 +21,8 @@
  *    of the queue, just comparing vectors would not work.
  * 5. I have added an iterator interface comparable with the one
  *    for std::vector, including all the const and reverse iterators.
+ * 6. I have implemented the assignment operators and initializer-list
+ *    constructor
  */
 
 
@@ -53,11 +55,13 @@ namespace dizzy{
         = typename container::const_reverse_iterator;
 
         flat_queue() = default;
-        explicit flat_queue(const container& data_);
-        explicit flat_queue(container&& data_);
-        flat_queue(const flat_queue& x);
-        flat_queue(flat_queue&& x);
-        flat_queue(std::initializer_list<T> init);
+        explicit flat_queue( const container& data_ );
+        explicit flat_queue( container&& data_ );
+        flat_queue( const flat_queue& x );
+        flat_queue( flat_queue&& x );
+        template< typename InputIt >
+        flat_queue( InputIt first, InputIt last );
+        flat_queue( std::initializer_list<T> init );
 
         flat_queue& operator= ( const flat_queue& other );
         flat_queue& operator= ( flat_queue&& otherwise );
@@ -71,17 +75,17 @@ namespace dizzy{
         reference back();
         const_reference back() const;
 
-        void push(const value_type& val);
-        void push(value_type&& val);
-        template <class... Args> void emplace(Args&&... args);
+        void push( const value_type& val );
+        void push( value_type&& val );
+        template <class... Args> void emplace( Args&&... args );
 
         void pop();
 
         void shrink_to_fit();
-        void reserve(size_type new_size);
-        void compress(double mult_factor = 2.0);
+        void reserve( size_type new_size );
+        void compress( double mult_factor = 2.0 );
 
-        void swap(flat_queue& x) noexcept;
+        void swap( flat_queue& x ) noexcept;
 
         iterator begin() noexcept;
         const_iterator begin() const noexcept;
@@ -97,23 +101,23 @@ namespace dizzy{
         const_reverse_iterator crend() const noexcept;
 
         template<typename U>
-        friend bool operator== (const flat_queue<U>& lhs,
-                                const flat_queue<U>& rhs);
+        friend bool operator== ( const flat_queue<U>& lhs,
+                                 const flat_queue<U>& rhs );
         template<typename U>
-        friend bool operator!= (const flat_queue<U>& lhs,
-                                const flat_queue<U>& rhs);
+        friend bool operator!= ( const flat_queue<U>& lhs,
+                                 const flat_queue<U>& rhs );
         template<typename U>
-        friend bool operator<  (const flat_queue<U>& lhs,
-                                const flat_queue<U>& rhs);
+        friend bool operator<  ( const flat_queue<U>& lhs,
+                                 const flat_queue<U>& rhs );
         template<typename U>
-        friend bool operator<= (const flat_queue<U>& lhs,
-                                const flat_queue<U>& rhs);
+        friend bool operator<= ( const flat_queue<U>& lhs,
+                                 const flat_queue<U>& rhs );
         template<typename U>
-        friend bool operator>  (const flat_queue<U>& lhs,
-                                const flat_queue<U>& rhs);
+        friend bool operator>  ( const flat_queue<U>& lhs,
+                                 const flat_queue<U>& rhs );
         template<typename U>
-        friend bool operator>= (const flat_queue<U>& lhs,
-                                const flat_queue<U>& rhs);
+        friend bool operator>= ( const flat_queue<U>& lhs,
+                                 const flat_queue<U>& rhs );
 
     private:
         container data;
@@ -122,27 +126,32 @@ namespace dizzy{
     };
 
     template<typename T>
-    flat_queue<T>::flat_queue(const container& data_)
-        : data{data_} {}
+    flat_queue<T>::flat_queue( const container& data_ ) : data{data_} {}
 
     template<typename T>
-    flat_queue<T>::flat_queue(container&& data_)
-        : data{std::move(data_)} {}
+    flat_queue<T>::flat_queue( container&& data_ ) : data{ std::move(data_) } {}
 
     template<typename T>
-    flat_queue<T>::flat_queue(const flat_queue& x)
-        : data{x.data}, true_front{x.true_front} {}
+    flat_queue<T>::flat_queue( const flat_queue& x )
+        : data( std::begin(x), std::end(x) ) {}
 
     template<typename T>
-    flat_queue<T>::flat_queue(flat_queue&& x)
-        : data{std::move(x.data)}, true_front{x.true_front} { x.true_front = 0;}
+    flat_queue<T>::flat_queue( flat_queue&& x )
+        : data(std::make_move_iterator( std::begin(x) ),
+               std::make_move_iterator( std::end(x) ) ) {
+        x.true_front = 0;
+    }
+
+    template< typename T > template < typename InputIt >
+    flat_queue<T>::flat_queue( InputIt first, InputIt last )
+        : data(first, last) {}
 
     template<typename T>
     flat_queue<T>::flat_queue(std::initializer_list<T> init) : data{init} {}
 
     template<typename T>
     flat_queue<T>& flat_queue<T>::operator= ( const flat_queue& other ){
-        auto temp{other};
+        flat_queue<T> temp( begin(other), end(other) );
         swap(temp);
         return *this;
     }
