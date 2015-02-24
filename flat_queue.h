@@ -36,10 +36,14 @@ namespace dizzy{
 
     template<typename T>
     class flat_queue{
-    private:
+    public:
+
         using size_type = unsigned;
         using value_type = T;
-    public:
+        using reference = T;  // std::vector::reference;
+        using const_reference = const T;  // std::vector::const_reference;
+        using pointer = T*;  // std::vector::pointer;
+        using const_pointer = const T*;  // std::vector::const_pointer;
 
         flat_queue();
         explicit flat_queue (const std::vector<value_type>& data_);
@@ -50,10 +54,10 @@ namespace dizzy{
         bool empty() const;
         size_type size() const;
 
-        value_type& front();
-        const value_type & front() const;
-        value_type& back();
-        const value_type & back() const;
+        reference& front();
+        const_reference& front() const;
+        reference& back();
+        const_reference& back() const;
 
         void push (const value_type& val);
         void push (value_type&& val);
@@ -121,16 +125,24 @@ namespace dizzy{
     }
 
     template<typename T>
-    T& flat_queue<T>::front(){ return data[true_front]; }
+    typename flat_queue<T>::reference& flat_queue<T>::front(){
+        return data[true_front];
+    }
 
     template<typename T>
-    const T & flat_queue<T>::front() const{ return data[true_front]; }
+    typename flat_queue<T>::const_reference& flat_queue<T>::front() const{
+        return data[true_front];
+    }
 
     template<typename T>
-    T& flat_queue<T>::back(){ return data.back(); }
+    typename flat_queue<T>::reference& flat_queue<T>::back(){
+        return data.back();
+    }
 
     template<typename T>
-    const T & flat_queue<T>::back() const{ return data.back(); }
+    typename flat_queue<T>::const_reference& flat_queue<T>::back() const{
+        return data.back();
+    }
 
     template<typename T>
     void flat_queue<T>::push (const T& val){ data.push_back(val); }
