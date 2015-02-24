@@ -1,7 +1,12 @@
 for flat_queue:
 
-/* Mark notes:
- * So, the interface you should be exposing is essentially std::vector's with
- *    adjustments that make sense for a queue
- *    Which also means things like .data, and even operator[], I would say
- */
+the interface you should be exposing is essentially std::vector's with
+   adjustments that make sense for a queue
+   Which also means things like .data, and even operator[], I would say
+
+
+todo:
+assign
+operator[]
+data
+insert
