@@ -21,8 +21,8 @@
  *    of the queue, just comparing vectors would not work.
  * 5. I have added an iterator interface comparable with the one
  *    for std::vector, including all the const and reverse iterators.
- * 6. I have implemented the assignment operators and initializer-list
- *    constructor
+ * 6. I have implemented the assignment operators, initializer-list
+ *    constructor, and range constructor
  */
 
 
@@ -142,7 +142,7 @@ namespace dizzy{
         x.true_front = 0;
     }
 
-    template< typename T > template < typename InputIt >
+    template< typename T > template< typename InputIt >
     flat_queue<T>::flat_queue( InputIt first, InputIt last )
         : data(first, last) {}
 
