@@ -15,6 +15,7 @@
  *      which has a default value of 2.
  *    - shrink_to_fit(): equivilant to compress(1). Analogous
  *      to the equivilant vector public member function
+ *    - clear(): analogous to the equivilant vector public member function
  * 4. I use std::equal and std::lexicographical_compare for the
  *    implementations of the relational operators as due to the
  *    possibly different undefined spaces prior to the beginning
@@ -84,6 +85,7 @@ namespace dizzy{
         void shrink_to_fit();
         void reserve( size_type new_size );
         void compress( double mult_factor = 2.0 );
+        void clear();
 
         void swap( flat_queue& x ) noexcept;
 
@@ -235,6 +237,12 @@ namespace dizzy{
         tempContainer.reserve( ceil(size() * mult_factor) );
         std::move( begin(), end(), std::back_inserter(tempContainer) );
         std::swap(data, tempContainer);
+        true_front = 0;
+    }
+
+    template<typename T>
+    void flat_queue<T>::clear(){
+        data.clear();
         true_front = 0;
     }
 
