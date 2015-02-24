@@ -148,10 +148,10 @@ namespace dizzy{
         : data(first, last) {}
 
     template<typename T>
-    flat_queue<T>::flat_queue(std::initializer_list<T> init) : data{init} {}
+    flat_queue<T>::flat_queue( std::initializer_list<T> init ) : data{init} {}
 
     template<typename T>
-    flat_queue<T>& flat_queue<T>::operator= ( const flat_queue& other ){
+    flat_queue<T>& flat_queue<T>::operator= ( const flat_queue& other ) {
         flat_queue<T> temp( begin(other), end(other) );
         swap(temp);
         return *this;
@@ -200,13 +200,13 @@ namespace dizzy{
     }
 
     template<typename T>
-    void flat_queue<T>::push(const T& val) { data.push_back(val); }
+    void flat_queue<T>::push( const T& val ) { data.push_back(val); }
 
     template<typename T>
-    void flat_queue<T>::push(T&& val) { data.push_back( std::move(val) ); }
+    void flat_queue<T>::push( T&& val ) { data.push_back( std::move(val) ); }
 
     template <typename T> template <class... Args>
-    void flat_queue<T>::emplace(Args&&... args) {
+    void flat_queue<T>::emplace( Args&&... args ) {
         data.emplace_back( std::forward<Args>(args)... );
     }
 
@@ -222,7 +222,7 @@ namespace dizzy{
     void flat_queue<T>::shrink_to_fit() { compress(1.0); }
 
     template<typename T>
-    void flat_queue<T>::reserve(flat_queue<T>::size_type new_size) {
+    void flat_queue<T>::reserve( flat_queue<T>::size_type new_size ) {
         if(empty()){
             data.reserve(new_size);
         } else{
@@ -231,7 +231,7 @@ namespace dizzy{
     }
 
     template<typename T>
-    void flat_queue<T>::compress(double mult_factor) {
+    void flat_queue<T>::compress( double mult_factor ) {
         container tempContainer;
         tempContainer.reserve( ceil(size() * mult_factor) );
         std::move( begin(), end(), std::back_inserter(tempContainer) );
@@ -246,55 +246,56 @@ namespace dizzy{
     }
 
     template<typename T>
-    void flat_queue<T>::swap(flat_queue& x) noexcept {
+    void flat_queue<T>::swap( flat_queue& x ) noexcept {
         using std::swap;
         swap(data, x.data);
         swap(true_front, x.true_front);
     }
 
     template<typename T>
-    void swap(flat_queue<T>& x, flat_queue<T>& y) {
+    void swap( flat_queue<T>& x, flat_queue<T>& y ) {
         x.swap(y);
     }
 
     template <typename T> typename flat_queue<T>::iterator
-    flat_queue<T>::begin() noexcept{ return std::begin(data) + true_front; }
+    flat_queue<T>::begin() noexcept { return std::begin(data) + true_front; }
 
     template <typename T> typename flat_queue<T>::const_iterator
-    flat_queue<T>::begin() const noexcept{ return data.cbegin() + true_front; }
+    flat_queue<T>::begin() const noexcept { return data.cbegin() + true_front; }
 
     template <typename T> typename flat_queue<T>::iterator
-    flat_queue<T>::end() noexcept{ return std::end(data); }
+    flat_queue<T>::end() noexcept { return std::end(data); }
 
     template <typename T> typename flat_queue<T>::const_iterator
-    flat_queue<T>::end() const noexcept{ return data.cend(); }
+    flat_queue<T>::end() const noexcept { return data.cend(); }
 
     template <typename T> typename flat_queue<T>::reverse_iterator
-    flat_queue<T>::rbegin() noexcept{ return data.rbegin(); }
+    flat_queue<T>::rbegin() noexcept { return data.rbegin(); }
 
     template <typename T> typename flat_queue<T>::const_reverse_iterator
-    flat_queue<T>::rbegin() const noexcept{ return data.crbegin(); }
+    flat_queue<T>::rbegin() const noexcept { return data.crbegin(); }
 
     template <typename T> typename flat_queue<T>::reverse_iterator
-    flat_queue<T>::rend() noexcept{ return data.rend() - true_front; }
+    flat_queue<T>::rend() noexcept { return data.rend() - true_front; }
 
     template <typename T> typename flat_queue<T>::const_reverse_iterator
-    flat_queue<T>::rend() const noexcept{ return data.crend() - true_front; }
+    flat_queue<T>::rend() const noexcept { return data.crend() - true_front; }
 
     template <typename T> typename flat_queue<T>::const_iterator
     flat_queue<T>::cbegin() const noexcept{ return data.cbegin() + true_front; }
 
     template <typename T> typename flat_queue<T>::const_iterator
-    flat_queue<T>::cend() const noexcept{ return data.cend(); }
+    flat_queue<T>::cend() const noexcept { return data.cend(); }
 
     template <typename T> typename flat_queue<T>::const_reverse_iterator
-    flat_queue<T>::crbegin() const noexcept{ return data.crbegin(); }
+    flat_queue<T>::crbegin() const noexcept { return data.crbegin(); }
 
     template <typename T> typename flat_queue<T>::const_reverse_iterator
-    flat_queue<T>::crend() const noexcept{ return data.crend() - true_front; }
+    flat_queue<T>::crend() const noexcept { return data.crend() - true_front; }
 
     template <typename T>
-    inline bool operator== (const flat_queue<T>& lhs, const flat_queue<T>& rhs){
+    inline bool operator== ( const flat_queue<T>& lhs,
+                             const flat_queue<T>& rhs ) {
         if (lhs.size() != rhs.size()){
             return false;
         }
@@ -302,29 +303,33 @@ namespace dizzy{
     }
 
     template <typename T>
-    inline bool operator!= (const flat_queue<T>& lhs, const flat_queue<T>& rhs){
+    inline bool operator!= ( const flat_queue<T>& lhs,
+                             const flat_queue<T>& rhs ) {
         return !(lhs == rhs);
     }
 
     template <typename T>
-    inline bool operator< (const flat_queue<T>& lhs, const flat_queue<T>& rhs) {
+    inline bool operator< ( const flat_queue<T>& lhs,
+                            const flat_queue<T>& rhs ) {
         return std::lexicographical_compare( begin(lhs), end(lhs),
                                              begin(rhs), end(rhs) );
     }
 
     template <typename T>
-    inline bool operator<= (const flat_queue<T>& lhs, const flat_queue<T>& rhs){
+    inline bool operator<= ( const flat_queue<T>& lhs,
+                             const flat_queue<T>& rhs ) {
         return !(rhs < lhs);
-
     }
 
     template <typename T>
-    inline bool operator> (const flat_queue<T>& lhs, const flat_queue<T>& rhs) {
+    inline bool operator> ( const flat_queue<T>& lhs,
+                            const flat_queue<T>& rhs ) {
         return rhs < lhs;
     }
 
     template <typename T>
-    inline bool operator>= (const flat_queue<T>& lhs, const flat_queue<T>& rhs){
+    inline bool operator>= ( const flat_queue<T>& lhs,
+                             const flat_queue<T>& rhs ) {
         return !(lhs < rhs);
     }
 

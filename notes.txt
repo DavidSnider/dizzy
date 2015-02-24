@@ -1,7 +1,6 @@
 for flat_queue:
 
 /* Mark notes:
- * If you can make your move operators noexcept, you should
  * So, the interface you should be exposing is essentially std::vector's with
  *    adjustments that make sense for a queue
  *    Which also means things like .data, and even operator[], I would say
