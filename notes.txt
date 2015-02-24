@@ -1,10 +1,7 @@
 for flat_queue:
 
 /* Mark notes:
- * Why reserve_space? Why not reserve?
  * Why not keep the standard interface... not std::queue's... but...
- * Compress is interesting, but you should also expose a shrink_to_fit method
- *    just have it call compress(1)
  * You should add the other usual suspects for aliases though... reference,
       const_reference, pointer, const_pointer
  * You should also add support for iteration and add those aliases

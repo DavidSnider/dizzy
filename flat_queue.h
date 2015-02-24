@@ -5,7 +5,7 @@
  * 2. I haven't implemented the constructors that take allocators.
  *       I will not be implementing these as I understand "Nobody overrides
  *       anything but the global one these days anyway"
- * 3. I have added two new member functions:
+ * 3. I have added three new member functions:
  *    - reserve(size_type): reserve space in the underlying vector
  *      to avoid reallocation during insertions. If given a size less
  *      than the current size, this does nothing, otherwise triggers
@@ -13,6 +13,8 @@
  *    - compress(double): reallocate the internal vector with
  *      allocation size proportional to size() * the argument,
  *      which has a default value of 2.
+ *    - shrink_to_fit(): equivilant to compress(1). Analogous
+ *      to the equivilant vector public member function
  * 4. I use std::equal and std::lexicographical_compare for the
  *    implementations of the relational operators as due to the
  *    possibly different undefined spaces prior to the beginning
@@ -59,6 +61,7 @@ namespace dizzy{
 
         void pop();
 
+        void shrink_to_fit();
         void reserve(size_type new_size);
         void compress(double mult_factor = 2.0);
 
@@ -147,6 +150,9 @@ namespace dizzy{
             compress();
         }
     }
+
+    template<typename T>
+    void flat_queue<T>::shrink_to_fit(){ compress(1.0); }
 
     template<typename T>
     void flat_queue<T>::reserve(flat_queue<T>::size_type new_size){
