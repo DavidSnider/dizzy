@@ -97,7 +97,7 @@ namespace dizzy{
     };
 
     template<typename T>
-    flat_queue<T>::flat_queue() : true_front{0} {}
+    flat_queue<T>::flat_queue () : true_front{0} {}
 
     template<typename T>
     flat_queue<T>::flat_queue (const std::vector<T>& data_)
@@ -116,72 +116,72 @@ namespace dizzy{
         : data{std::move(x.data)}, true_front{x.true_front} { x.true_front = 0;}
 
     template<typename T>
-    bool flat_queue<T>::empty() const{
+    bool flat_queue<T>::empty () const {
         return data.size() == true_front;
     }
 
     template<typename T>
-    typename flat_queue<T>::size_type flat_queue<T>::size() const{
+    typename flat_queue<T>::size_type flat_queue<T>::size () const {
         return data.size() - true_front;
     }
 
     template<typename T>
-    typename flat_queue<T>::reference& flat_queue<T>::front(){
+    typename flat_queue<T>::reference& flat_queue<T>::front () {
         return data[true_front];
     }
 
     template<typename T>
-    typename flat_queue<T>::const_reference& flat_queue<T>::front() const{
+    typename flat_queue<T>::const_reference& flat_queue<T>::front () const {
         return data[true_front];
     }
 
     template<typename T>
-    typename flat_queue<T>::reference& flat_queue<T>::back(){
+    typename flat_queue<T>::reference& flat_queue<T>::back () {
         return data.back();
     }
 
     template<typename T>
-    typename flat_queue<T>::const_reference& flat_queue<T>::back() const{
+    typename flat_queue<T>::const_reference& flat_queue<T>::back () const {
         return data.back();
     }
 
     template<typename T>
-    void flat_queue<T>::push (const T& val){ data.push_back(val); }
+    void flat_queue<T>::push (const T& val) { data.push_back(val); }
 
     template<typename T>
-    void flat_queue<T>::push (T&& val){ data.push_back(std::move(val) ); }
+    void flat_queue<T>::push (T&& val) { data.push_back( std::move(val) ); }
 
     template <typename T> template <class... Args>
-    void flat_queue<T>::emplace (Args&&... args){
-        data.emplace_back(std::forward<Args>(args)...);
+    void flat_queue<T>::emplace (Args&&... args) {
+        data.emplace_back( std::forward<Args>(args)... );
     }
 
     template<typename T>
-    void flat_queue<T>::pop(){
+    void flat_queue<T>::pop() {
         ++true_front;
-        if(true_front > data.size() / 2 ){
+        if( true_front > data.size() / 2 ){
             compress();
         }
     }
 
     template<typename T>
-    void flat_queue<T>::shrink_to_fit(){ compress(1.0); }
+    void flat_queue<T>::shrink_to_fit() { compress(1.0); }
 
     template<typename T>
-    void flat_queue<T>::reserve(flat_queue<T>::size_type new_size){
+    void flat_queue<T>::reserve(flat_queue<T>::size_type new_size) {
         if(empty()){
             data.reserve(new_size);
         } else{
-            compress( new_size / static_cast<double>(size()) );
+            compress( new_size / static_cast<double>( size() ) );
         }
     }
 
     template<typename T>
-    void flat_queue<T>::compress(double mult_factor){
+    void flat_queue<T>::compress(double mult_factor) {
         std::vector<T> tempVec;
         tempVec.reserve( ceil(size() * mult_factor) );
-        std::move(begin(data) + true_front, end(data),
-                  std::back_inserter(tempVec));
+        std::move( begin(data) + true_front, end(data),
+                  std::back_inserter(tempVec) );
         std::swap(data, tempVec);
         true_front = 0;
     }
@@ -194,7 +194,7 @@ namespace dizzy{
     }
 
     template<typename T>
-    void swap(flat_queue<T>& x, flat_queue<T>& y){
+    void swap(flat_queue<T>& x, flat_queue<T>& y) {
         x.swap(y);
     }
 
@@ -213,7 +213,7 @@ namespace dizzy{
     }
 
     template <typename T>
-    inline bool operator< (const flat_queue<T>& lhs, const flat_queue<T>& rhs){
+    inline bool operator< (const flat_queue<T>& lhs, const flat_queue<T>& rhs) {
         return std::lexicographical_compare(begin(lhs.data) + lhs.true_front,
                                             end(lhs.data),
                                             begin(rhs.data) + rhs.true_front,
@@ -227,7 +227,7 @@ namespace dizzy{
     }
 
     template <typename T>
-    inline bool operator> (const flat_queue<T>& lhs, const flat_queue<T>& rhs){
+    inline bool operator> (const flat_queue<T>& lhs, const flat_queue<T>& rhs) {
         return rhs < lhs;
     }
 

@@ -3,7 +3,8 @@ for flat_queue:
 /* Mark notes:
  * Why not keep the standard interface... not std::queue's... but...
  * You should add the other usual suspects for aliases though... reference,
-      const_reference, pointer, const_pointer
+ *    const_reference, pointer, const_pointer
+ *    FIX ME
  * You should also add support for iteration and add those aliases
  * If you can make your move operators noexcept, you should
  * You supply custom copy/move constructors but *not* assignment operators...
