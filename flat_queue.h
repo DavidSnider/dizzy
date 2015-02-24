@@ -37,17 +37,23 @@ namespace dizzy{
     public:
 
         using size_type = std::size_t;
+        using container = std::vector<T>;
         using value_type = T;
-        using pointer = typename std::vector<T>::pointer;
-        using const_pointer = typename std::vector<T>::const_pointer;
-        using reference = typename std::vector<T>::reference;
-        using const_reference = typename std::vector<T>::const_reference;
+        using pointer = typename container::pointer;
+        using const_pointer = typename container::const_pointer;
+        using reference = typename container::reference;
+        using const_reference = typename container::const_reference;
+
+        using iterator = container::iterator;
+        using const_iterator = container::const_iterator;
+        using reverse_iterator = container::reverse_iterator;
+        using const_reverse_iterator = container::const_reverse_iterator;
 
         flat_queue();
-        explicit flat_queue (const std::vector<value_type>& data_);
-        explicit flat_queue (std::vector<value_type>&& data_);
-        flat_queue (const flat_queue& x);
-        flat_queue (flat_queue&& x);
+        explicit flat_queue(const container& data_);
+        explicit flat_queue(container&& data_);
+        flat_queue(const flat_queue& x);
+        flat_queue(flat_queue&& x);
 
         bool empty() const;
         size_type size() const;
@@ -57,8 +63,8 @@ namespace dizzy{
         reference& back();
         const_reference& back() const;
 
-        void push (const value_type& val);
-        void push (value_type&& val);
+        void push(const value_type& val);
+        void push(value_type&& val);
         template <class... Args> void emplace(Args&&... args);
 
         void pop();
@@ -67,7 +73,20 @@ namespace dizzy{
         void reserve(size_type new_size);
         void compress(double mult_factor = 2.0);
 
-        void swap (flat_queue& x) noexcept;
+        void swap(flat_queue& x) noexcept;
+
+        iterator begin() noexcept;
+        const_iterator begin() const noexcept;
+        iterator end() noexcept;
+        const_iterator end() const noexcept;
+        reverse_iterator rbegin() noexcept;
+        const_reverse_iterator rbegin() const noexcept;
+        reverse_iterator rend() noexcept;
+        const_reverse_iterator rend() const noexcept;
+        const_iterator cbegin() const noexcept;
+        const_iterator cend() const noexcept;
+        const_reverse_iterator crbegin() const noexcept;
+        const_reverse_iterator crend() const noexcept;
 
         template<typename U>
         friend bool operator== (const flat_queue<U>& lhs,
@@ -89,68 +108,68 @@ namespace dizzy{
                                 const flat_queue<U>& rhs);
 
     private:
-        std::vector<T> data;
+        container data;
         size_type true_front;
 
     };
 
     template<typename T>
-    flat_queue<T>::flat_queue () : true_front{0} {}
+    flat_queue<T>::flat_queue() : true_front{0} {}
 
     template<typename T>
-    flat_queue<T>::flat_queue (const std::vector<T>& data_)
+    flat_queue<T>::flat_queue(const container& data_)
         : data{data_}, true_front{0} {}
 
     template<typename T>
-    flat_queue<T>::flat_queue (std::vector<value_type>&& data_)
+    flat_queue<T>::flat_queue(container&& data_)
         : data{std::move(data_)}, true_front{0} {}
 
     template<typename T>
-    flat_queue<T>::flat_queue (const flat_queue& x)
+    flat_queue<T>::flat_queue(const flat_queue& x)
         : data{x.data}, true_front{x.true_front} {}
 
     template<typename T>
-    flat_queue<T>::flat_queue (flat_queue&& x)
+    flat_queue<T>::flat_queue(flat_queue&& x)
         : data{std::move(x.data)}, true_front{x.true_front} { x.true_front = 0;}
 
     template<typename T>
-    bool flat_queue<T>::empty () const {
+    bool flat_queue<T>::empty() const {
         return data.size() == true_front;
     }
 
     template<typename T>
-    typename flat_queue<T>::size_type flat_queue<T>::size () const {
+    typename flat_queue<T>::size_type flat_queue<T>::size() const {
         return data.size() - true_front;
     }
 
     template<typename T>
-    typename flat_queue<T>::reference& flat_queue<T>::front () {
+    typename flat_queue<T>::reference& flat_queue<T>::front() {
         return data[true_front];
     }
 
     template<typename T>
-    typename flat_queue<T>::const_reference& flat_queue<T>::front () const {
+    typename flat_queue<T>::const_reference& flat_queue<T>::front() const {
         return data[true_front];
     }
 
     template<typename T>
-    typename flat_queue<T>::reference& flat_queue<T>::back () {
+    typename flat_queue<T>::reference& flat_queue<T>::back() {
         return data.back();
     }
 
     template<typename T>
-    typename flat_queue<T>::const_reference& flat_queue<T>::back () const {
+    typename flat_queue<T>::const_reference& flat_queue<T>::back() const {
         return data.back();
     }
 
     template<typename T>
-    void flat_queue<T>::push (const T& val) { data.push_back(val); }
+    void flat_queue<T>::push(const T& val) { data.push_back(val); }
 
     template<typename T>
-    void flat_queue<T>::push (T&& val) { data.push_back( std::move(val) ); }
+    void flat_queue<T>::push(T&& val) { data.push_back( std::move(val) ); }
 
     template <typename T> template <class... Args>
-    void flat_queue<T>::emplace (Args&&... args) {
+    void flat_queue<T>::emplace(Args&&... args) {
         data.emplace_back( std::forward<Args>(args)... );
     }
 
@@ -176,11 +195,11 @@ namespace dizzy{
 
     template<typename T>
     void flat_queue<T>::compress(double mult_factor) {
-        std::vector<T> tempVec;
-        tempVec.reserve( ceil(size() * mult_factor) );
+        container tempContainer;
+        tempContainer.reserve( ceil(size() * mult_factor) );
         std::move( begin(data) + true_front, end(data),
-                  std::back_inserter(tempVec) );
-        std::swap(data, tempVec);
+                  std::back_inserter(tempContainer) );
+        std::swap(data, tempContainer);
         true_front = 0;
     }
 
@@ -194,6 +213,58 @@ namespace dizzy{
     template<typename T>
     void swap(flat_queue<T>& x, flat_queue<T>& y) {
         x.swap(y);
+    }
+
+    template <typename T> flat_queue<T>::iterator
+    flat_queue<T>::begin() noexcept{ return begin(data) + true_front; }
+
+    template <typename T> flat_queue<T>::const_iterator
+    flat_queue<T>::begin() const noexcept{ return cbegin(data) + true_front; }
+
+    template <typename T> flat_queue<T>::iterator
+    flat_queue<T>::end() noexcept{ return end(data); }
+
+    template <typename T> flat_queue<T>::const_iterator
+    flat_queue<T>::end() const noexcept{ return cend(data); }
+
+    template <typename T> flat_queue<T>::reverse_iterator
+    flat_queue<T>::rbegin() noexcept{
+
+    }
+
+    template <typename T> flat_queue<T>::const_reverse_iterator
+    flat_queue<T>::rbegin() const noexcept{
+
+    }
+
+    template <typename T> flat_queue<T>::reverse_iterator
+    flat_queue<T>::rend() noexcept{
+
+    }
+
+    template <typename T> flat_queue<T>::const_reverse_iterator
+    flat_queue<T>::rend() const noexcept{
+
+    }
+
+    template <typename T> flat_queue<T>::const_iterator
+    flat_queue<T>::cbegin() const noexcept{
+
+    }
+
+    template <typename T> flat_queue<T>::const_iterator
+    flat_queue<T>::cend() const noexcept{
+
+    }
+
+    template <typename T> flat_queue<T>::const_reverse_iterator
+    flat_queue<T>::crbegin() const noexcept{
+
+    }
+
+    template <typename T> flat_queue<T>::const_reverse_iterator
+    flat_queue<T>::crend() const noexcept{
+
     }
 
     template <typename T>
