@@ -1,9 +1,10 @@
 /* A vector based implementation of std::queue. It contains mostly
- * the same interface with a few modications.
+ * the same interface with a few (okay many) modications.
  * 1. Since this is specifically vector based, the option of a
  *    container base is not given.
  * 2. I haven't implemented the constructors that take allocators.
- *    Maybe I'll get around to it when I'm feeling more competent.
+ *       I will not be implementing these as I understand "Nobody overrides
+ *       anything but the global one these days anyway"
  * 3. I have added two new member functions:
  *    - reserve_space(size_type): reserve space in the underlying vector
  *      to avoid reallocation during insertions. If given a size less

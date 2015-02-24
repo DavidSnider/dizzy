@@ -1,8 +1,6 @@
 for flat_queue:
 
 /* Mark notes:
- * Don't ever add allocator support, it's an exercise in hating yourself.
- *    Nobody overrides anything but the global one these days anyway.
  * Why reserve_space? Why not reserve?
  * Why not keep the standard interface... not std::queue's... but...
  * Compress is interesting, but you should also expose a shrink_to_fit method
