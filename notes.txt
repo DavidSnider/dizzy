@@ -2,7 +2,6 @@ for flat_queue:
 
 /* Mark notes:
  * Why not keep the standard interface... not std::queue's... but...
- * You should also add support for iteration and add those aliases
  * If you can make your move operators noexcept, you should
  * You supply custom copy/move constructors but *not* assignment operators...
  * You definitely should *not* be implementing copy/move stuff
@@ -18,5 +17,4 @@ for flat_queue:
  * So, the interface you should be exposing is essentially std::vector's with
  *    adjustments that make sense for a queue
  *    Which also means things like .data, and even operator[], I would say
- * for the iterators, just expose std::vectors.
  */
