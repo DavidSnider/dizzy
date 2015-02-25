@@ -17,7 +17,8 @@
  *      to the equivilant vector public member function
  *    - clear(): analogous to the equivilant vector public member function
  *    - data(): analogous to the equivilant vector public member function,
- *      returns a reference to the underlying container
+ *      returns a pointer to the location within the internal containing the
+ *      first element in the queue.
  *    - assign(): analogous to the equivilant vector public member function
  *    - operator[]: analogous to the equivilant vector public member function,
  *      [0] will yield the next element in the queue, not the first element
@@ -97,8 +98,8 @@ namespace dizzy{
         void compress( double mult_factor = 2.0 );
         void clear();
 
-        container& data();
-        const container& data() const;
+        pointer data();
+        const_pointer data() const;
 
         void swap( flat_queue& x ) noexcept;
 
@@ -268,11 +269,13 @@ namespace dizzy{
     }
 
     template<typename T>
-    typename flat_queue<T>::container& flat_queue<T>::data() { return data_; }
+    typename flat_queue<T>::pointer flat_queue<T>::data() {
+        return data_.data() + true_front;
+    }
 
     template<typename T>
-    const typename flat_queue<T>::container& flat_queue<T>::data() const {
-        return data_;
+    typename flat_queue<T>::const_pointer flat_queue<T>::data() const {
+        return data_.data() + true_front;
     }
 
     template<typename T>
