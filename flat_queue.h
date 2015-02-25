@@ -5,7 +5,7 @@
  * 2. I haven't implemented the constructors that take allocators.
  *       I will not be implementing these as I understand "Nobody overrides
  *       anything but the global one these days anyway"
- * 3. I have added three new member functions:
+ * 3. I have added some new member functions:
  *    - reserve(size_type): reserve space in the underlying vector
  *      to avoid reallocation during insertions. If given a size less
  *      than the current size, this does nothing, otherwise triggers
@@ -19,14 +19,17 @@
  *    - data(): analogous to the equivilant vector public member function,
  *      returns a reference to the underlying container
  *    - assign(): analogous to the equivilant vector public member function
- * 4. I use std::equal and std::lexicographical_compare for the
+ *    - operator[]: analogous to the equivilant vector public member function,
+ *      [0] will yield the next element in the queue, not the first element
+ *      in the internal vector.
+ *    - The assignment operators.
+ *    - initializer-list and range constructors
+ * 4. I have added an iterator interface comparable with the one
+ *    for std::vector, including all the const and reverse iterators.
+ * 5. I use std::equal and std::lexicographical_compare for the
  *    implementations of the relational operators as due to the
  *    possibly different undefined spaces prior to the beginning
  *    of the queue, just comparing vectors would not work.
- * 5. I have added an iterator interface comparable with the one
- *    for std::vector, including all the const and reverse iterators.
- * 6. I have implemented the assignment operators, initializer-list
- *    constructor, and range constructor
  */
 
 
@@ -39,11 +42,6 @@
 #include <cmath>
 
 namespace dizzy{
-
-/* todo:
- * assign
- * operator[]
- */
 
     template<typename T>
     class flat_queue{
@@ -85,6 +83,8 @@ namespace dizzy{
         const_reference front() const;
         reference back();
         const_reference back() const;
+        reference operator[]( size_type pos );
+        const_reference operator[]( size_type pos ) const;
 
         void push( const value_type& val );
         void push( value_type&& val );
@@ -209,6 +209,16 @@ namespace dizzy{
     template<typename T>
     typename flat_queue<T>::const_reference flat_queue<T>::back() const {
         return data_.back();
+    }
+
+    template<typename T> typename flat_queue<T>::reference
+    flat_queue<T>::operator[]( typename flat_queue<T>::size_type pos ) {
+        return data[true_front + pos];
+    }
+
+    template<typename T> typename flat_queue<T>::const_reference
+    flat_queue<T>::operator[]( typename flat_queue<T>::size_type pos ) const {
+        return data[true_front + pos];
     }
 
     template<typename T>
