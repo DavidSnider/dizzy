@@ -167,7 +167,7 @@ namespace dizzy{
     }
 
     template<typename T>
-    flat_queue<T>& flat_queue<T>::operator= ( std::initializer_list<T> init){
+    flat_queue<T>& flat_queue<T>::operator= ( std::initializer_list<T> init) {
         data_ = init;
         true_front = 0;
     }
@@ -288,15 +288,15 @@ namespace dizzy{
     }
 
     template<typename T>
-    void swap( flat_queue<T>& x, flat_queue<T>& y ) {
-        x.swap(y);
-    }
+    void swap( flat_queue<T>& x, flat_queue<T>& y ) { x.swap(y); }
 
     template <typename T> typename flat_queue<T>::iterator
     flat_queue<T>::begin() noexcept { return std::begin(data_) + true_front; }
 
     template <typename T> typename flat_queue<T>::const_iterator
-    flat_queue<T>::begin() const noexcept { return data_.cbegin() + true_front; }
+    flat_queue<T>::begin() const noexcept {
+        return data_.cbegin() + true_front;
+    }
 
     template <typename T> typename flat_queue<T>::iterator
     flat_queue<T>::end() noexcept { return std::end(data_); }
@@ -317,7 +317,9 @@ namespace dizzy{
     flat_queue<T>::rend() const noexcept { return data_.crend() - true_front; }
 
     template <typename T> typename flat_queue<T>::const_iterator
-    flat_queue<T>::cbegin() const noexcept{ return data_.cbegin() + true_front; }
+    flat_queue<T>::cbegin() const noexcept {
+        return data_.cbegin() + true_front;
+    }
 
     template <typename T> typename flat_queue<T>::const_iterator
     flat_queue<T>::cend() const noexcept { return data_.cend(); }
