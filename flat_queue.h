@@ -175,11 +175,13 @@ namespace dizzy{
     template<typename T> template< typename InputIt >
     void flat_queue<T>::assign( InputIt first, InputIt last ) {
         data_.assign(first, last);
+        true_front = 0;
     }
 
     template<typename T>
     void flat_queue<T>::assign( std::initializer_list<T> init ) {
         data_.assign(init);
+        true_front = 0;
     }
 
     template<typename T>
