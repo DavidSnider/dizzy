@@ -18,6 +18,7 @@
  *    - clear(): analogous to the equivilant vector public member function
  *    - data(): analogous to the equivilant vector public member function,
  *      returns a reference to the underlying container
+ *    - assign(): analogous to the equivilant vector public member function
  * 4. I use std::equal and std::lexicographical_compare for the
  *    implementations of the relational operators as due to the
  *    possibly different undefined spaces prior to the beginning
@@ -42,8 +43,8 @@ namespace dizzy{
 /* todo:
  * assign
  * operator[]
- * data_
  */
+
     template<typename T>
     class flat_queue{
     public:
@@ -73,6 +74,9 @@ namespace dizzy{
         flat_queue& operator= ( const flat_queue& other );
         flat_queue& operator= ( flat_queue&& other ) = default;
         flat_queue& operator= ( std::initializer_list<T> init );
+
+        template< typename InputIt > void assign( InputIt first, InputIt last );
+        void assign( std::initializer_list<T> init );
 
         bool empty() const;
         size_type size() const;
@@ -165,6 +169,16 @@ namespace dizzy{
     flat_queue<T>& flat_queue<T>::operator= ( std::initializer_list<T> init){
         data_ = init;
         true_front = 0;
+    }
+
+    template<typename T> template< typename InputIt >
+    void flat_queue<T>::assign( InputIt first, InputIt last ) {
+        data_.assign(first, last);
+    }
+
+    template<typename T>
+    void flat_queue<T>::assign( std::initializer_list<T> init ) {
+        data_.assign(init);
     }
 
     template<typename T>
