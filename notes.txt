@@ -1,12 +1,4 @@
 for flat_queue:
 
-the interface you should be exposing is essentially std::vector's with
-   adjustments that make sense for a queue
-   Which also means things like .data, and even operator[], I would say
-
-
-todo:
-assign
-operator[]
-data
-insert
+set up push so that we grow the vector ourself and do the shifting during the growth.
+    Check growth factors for best amazingness
