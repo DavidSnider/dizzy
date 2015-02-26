@@ -95,7 +95,7 @@ namespace dizzy{
 
         void shrink_to_fit();
         void reserve( size_type new_size );
-        void compress( double mult_factor = 2.0 );
+        void compress( double mult_factor = 1.5 );
         void clear();
 
         pointer data();

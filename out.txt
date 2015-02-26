@@ -1,0 +1,2 @@
+find: `/home/david/.cache/dconf': Permission denied
+find: `/root': Permission denied
