@@ -95,7 +95,7 @@ namespace dizzy{
 
         void shrink_to_fit();
         void reserve( size_type new_size );
-        void compress( double mult_factor = 1.5 );
+        void compress_and_reserve( double mult_factor = 1.5 );
         void clear();
 
         pointer data();
@@ -139,6 +139,7 @@ namespace dizzy{
         container data_;
         size_type true_front = 0;
 
+        void check_and_grow();
     };
 
     template<typename T>
@@ -216,22 +217,36 @@ namespace dizzy{
 
     template<typename T> typename flat_queue<T>::reference
     flat_queue<T>::operator[]( typename flat_queue<T>::size_type pos ) {
-        return data[true_front + pos];
+        return data_[true_front + pos];
     }
 
     template<typename T> typename flat_queue<T>::const_reference
     flat_queue<T>::operator[]( typename flat_queue<T>::size_type pos ) const {
-        return data[true_front + pos];
+        return data_[true_front + pos];
     }
 
     template<typename T>
-    void flat_queue<T>::push( const T& val ) { data_.push_back(val); }
+    void flat_queue<T>::check_and_grow() {
+        if(data_.size() == data_.capacity()){
+            compress_and_reserve();
+        }
+    }
 
     template<typename T>
-    void flat_queue<T>::push( T&& val ) { data_.push_back( std::move(val) ); }
+    void flat_queue<T>::push( const T& val ) {
+        check_and_grow();
+        data_.push_back(val);
+    }
+
+    template<typename T>
+    void flat_queue<T>::push( T&& val ) {
+        check_and_grow();
+        data_.push_back( std::move(val) );
+    }
 
     template <typename T> template <class... Args>
     void flat_queue<T>::emplace( Args&&... args ) {
+        check_and_grow();
         data_.emplace_back( std::forward<Args>(args)... );
     }
 
@@ -239,28 +254,28 @@ namespace dizzy{
     void flat_queue<T>::pop() {
         ++true_front;
         if( true_front > data_.size() / 2 ){
-            compress();
+            compress_and_reserve();
         }
     }
 
     template<typename T>
-    void flat_queue<T>::shrink_to_fit() { compress(1.0); }
+    void flat_queue<T>::shrink_to_fit() { compress_and_reserve(1.0); }
 
     template<typename T>
     void flat_queue<T>::reserve( flat_queue<T>::size_type new_size ) {
         if(empty()){
             data_.reserve(new_size);
         } else{
-            compress( new_size / static_cast<double>( size() ) );
+            compress_and_reserve( new_size / static_cast<double>( size() ) );
         }
     }
 
     template<typename T>
-    void flat_queue<T>::compress( double mult_factor ) {
+    void flat_queue<T>::compress_and_reserve( double mult_factor ) {
         container tempContainer;
         tempContainer.reserve( ceil(size() * mult_factor) );
         std::move( begin(), end(), std::back_inserter(tempContainer) );
-        std::swap(data_, tempContainer);
+        std::swap( data_, tempContainer );
         true_front = 0;
     }
 
@@ -288,7 +303,7 @@ namespace dizzy{
     }
 
     template<typename T>
-    void swap( flat_queue<T>& x, flat_queue<T>& y ) { x.swap(y); }
+    void swap( flat_queue<T>& x, flat_queue<T>& y ) noexcept { x.swap(y); }
 
     template <typename T> typename flat_queue<T>::iterator
     flat_queue<T>::begin() noexcept { return std::begin(data_) + true_front; }
